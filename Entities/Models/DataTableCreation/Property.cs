@@ -9,7 +9,7 @@ namespace Entities.Models.DataTableCreation
 {
     public class Property
     {
-        public string Name { get; set; }
+        public string FieldName { get; set; }
 
         public SqlDbType DataType { get; set; }
 

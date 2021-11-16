@@ -22,9 +22,9 @@ namespace CRM_BACKEND.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTable([FromQuery]Database database, [FromBody]Table table)
+        public async Task<IActionResult> CreateTable(DataTableService service)
         {
-            await repository.Datatable.CreateTable(database, table);
+            await repository.Datatable.CreateTable(service);
 
             return Ok("СОЗДАЛОСЬ");
         }

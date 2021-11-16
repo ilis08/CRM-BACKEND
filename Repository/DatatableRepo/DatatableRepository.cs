@@ -18,27 +18,26 @@ namespace Repository.DatatableRepo
 
         }
 
-        public async Task CreateTable(Database database,Table table)
+        public async Task CreateTable(DataTableService service)
         {
-            await OpenConnection(database);
+            await OpenConnection(service.Database);
 
-            var tables = string.Join(",", table.Properties.Select(c => string.Format($"{c.ParameterName} {c.SqlDbType}")));
+            var tables = string.Join(",", service.Table.Properties.Select(c => string.Format($"{c.FieldName} {c.DataType}")));
 
-            var sql = new SqlCommand($"CREATE TABLE {table.Name} ( {tables} );", sqlConnection);
+            var sql = new SqlCommand($"CREATE TABLE {service.Table.Name} ( {tables} );", sqlConnection);
 
             sql.CommandType = CommandType.Text;
             await sql.ExecuteNonQueryAsync();
 
             await CloseConnection();
-
         }
 
-        public async Task DeleteTable(Database database, Table table)
+        public async Task DeleteTable(DataTableService service)
         {
             throw new NotImplementedException();
         }
 
-        public async Task UpdateTable(Database database, Table table)
+        public async Task UpdateTable(DataTableService service)
         {
             throw new NotImplementedException();
         }

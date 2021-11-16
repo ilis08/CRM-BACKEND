@@ -10,10 +10,10 @@ namespace Repository.DatatableRepo
 {
     public interface IDatatableRepository
     {
-        public Task CreateTable(Database database,Table table);
+        public Task CreateTable(DataTableService service);
 
-        public Task UpdateTable(Database database, Table table);
+        public Task UpdateTable(DataTableService service);
 
-        public Task DeleteTable(Database database, Table table);
+        public Task DeleteTable(DataTableService service);
     }
 }

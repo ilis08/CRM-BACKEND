@@ -11,6 +11,6 @@ namespace Entities.Models.DataTableCreation
     {
         public string Name { get; set; }
 
-        public List<SqlParameter> Properties { get; set; }
+        public List<Property> Properties { get; set; }
     }
 }
