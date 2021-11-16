@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entities.Models.DatabaseCreation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace Repository.DatabaseRepo
 {
     public interface IDatabaseRepository
     {
-        public Task CreateDatabase(string name);
+        public Task<bool> CreateDatabase(Database database);
 
         public Task DeleteDatabase(string name);
     }

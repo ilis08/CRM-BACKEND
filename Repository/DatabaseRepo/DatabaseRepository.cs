@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entities.Models.DatabaseCreation;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -20,16 +21,28 @@ namespace Repository.DatabaseRepo
 
         }
 
-        public async Task CreateDatabase(string name)
+        public async Task<bool> CreateDatabase(Database database)
         {
             await OpenConnection();
 
-            var sql = new SqlCommand($"CREATE DATABASE {name}", sqlConnection);
+            DatabaseChecker checker = new();
 
-            sql.CommandType = CommandType.Text;
-            sql.ExecuteNonQuery();
+            var value = await checker.CheckIfDBExistsAsync(database);
 
-            await CloseConnection();
+            if (value != true)
+            {
+                var sql = new SqlCommand($"CREATE DATABASE {database.Name}", sqlConnection);
+
+                sql.CommandType = CommandType.Text;
+                sql.ExecuteNonQuery();
+
+                return true;
+            }
+            else
+            {
+                await CloseConnection();
+                return false;
+            }
         }
 
         public async Task DeleteDatabase(string name)
@@ -43,5 +56,7 @@ namespace Repository.DatabaseRepo
 
             await CloseConnection();
         }
+
+
     }
 }

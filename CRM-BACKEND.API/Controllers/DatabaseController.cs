@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Entities.Models.DatabaseCreation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository;
 using System;
@@ -20,17 +21,24 @@ namespace CRM_BACKEND.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateDatabase(string name)
+        public async Task<IActionResult> CreateDatabase([FromQuery]Database database)
         {
-            await repository.Database.CreateDatabase(name);
+            if (await repository.Database.CreateDatabase(database))
+            {
+                return Ok("Database is created succesfully.");
+            }
+            else
+            {
+                return Ok("Database was not created");
+            }
 
-            return Ok("Database is created succesfully.");
+
         }
 
         [HttpDelete]
-        public IActionResult DeleteDatabase(string name)
+        public async Task<IActionResult> DeleteDatabase(string name)
         {
-            repository.Database.DeleteDatabase(name);
+            await repository.Database.DeleteDatabase(name);
 
             return Ok("Database is deleted succesfully.");
         }
