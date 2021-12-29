@@ -11,9 +11,16 @@ namespace Repository.DatabaseRepo
 {
     public class DatabaseRepository : DatabaseConfiguration, IDatabaseRepository
     {
-        public DatabaseRepository(string databaseName) : base(databaseName)
-        {
+        public DatabaseChecker dbChecker;
 
+        public DatabaseRepository(string databaseName, DatabaseChecker databaseChecker) : base(databaseName)
+        {
+            dbChecker = databaseChecker;
+        }
+
+        public DatabaseRepository(DatabaseChecker databaseChecker)
+        {
+            dbChecker = databaseChecker;
         }
 
         public DatabaseRepository()
@@ -25,9 +32,7 @@ namespace Repository.DatabaseRepo
         {
             await OpenConnection();
 
-            DatabaseChecker checker = new();
-
-            var value = await checker.CheckIfDBExistsAsync(database);
+            var value = await dbChecker.CheckIfDBExistsAsync(database);
 
             if (value != true)
             {
@@ -36,6 +41,7 @@ namespace Repository.DatabaseRepo
                 sql.CommandType = CommandType.Text;
                 sql.ExecuteNonQuery();
 
+                await CloseConnection();
                 return true;
             }
             else
@@ -45,16 +51,30 @@ namespace Repository.DatabaseRepo
             }
         }
 
-        public async Task DeleteDatabase(string name)
+        public async Task<bool> DeleteDatabase(Database database)
         {
             await OpenConnection();
 
-            var sql = new SqlCommand($"DROP DATABASE {name}", sqlConnection);
+            var value = await dbChecker.CheckIfDBExistsAsync(database);
 
-            sql.CommandType = CommandType.Text;
-            sql.ExecuteNonQuery();
+            if (value != true)
+            {
 
-            await CloseConnection();
+                var sql = new SqlCommand($"DROP DATABASE {database.Name}", sqlConnection);
+
+                sql.CommandType = CommandType.Text;
+                sql.ExecuteNonQuery();
+
+                await CloseConnection();
+
+                return true;
+            }
+            else
+            {
+                await CloseConnection();
+
+                return false;
+            }
         }
 
 

@@ -21,12 +21,36 @@ namespace CRM_BACKEND.API.Controllers
             repository = _repository;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetTable([FromQuery]DataTableService service)
+        {
+            var schema  = await repository.Datatable.GetTableSchema(service);
+
+            return Ok(schema);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateTable(DataTableService service)
         {
-            await repository.Datatable.CreateTable(service);
+            var value = await repository.Datatable.CreateTable(service);
 
-            return Ok("СОЗДАЛОСЬ");
+            if (value)
+            {
+                return Ok("Table was succesfully created.");
+            }
+            else
+            {
+                return BadRequest("Table was not created.");
+            }
+  
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteTable(DataTableService service)
+        {
+            await repository.Datatable.DeleteTable(service);
+
+            return Ok("УДАЛИЛОСЬ.");
         }
     }
 }

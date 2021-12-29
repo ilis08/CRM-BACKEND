@@ -27,6 +27,7 @@ namespace Repository.DatabaseRepo
                 }              
             }
 
+            await CloseConnection(); 
 
             if ((bool)value == true)
             {
@@ -46,7 +47,6 @@ namespace Repository.DatabaseRepo
                         ELSE CAST(0 AS BIT) END AS DATABASA";
 
             return sql;
-
         }
 
     }

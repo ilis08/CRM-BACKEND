@@ -19,7 +19,7 @@ namespace Repository
             {
                 if (_databaseRepository == null)
                 {
-                    _databaseRepository = new DatabaseRepository();
+                    _databaseRepository = new DatabaseRepository(new DatabaseChecker());
                 }
 
                 return _databaseRepository;
@@ -32,7 +32,7 @@ namespace Repository
             {
                 if (_datatableRepository == null)
                 {
-                    _datatableRepository = new DatatableRepository();
+                    _datatableRepository = new DatatableRepository(new DatatableChecker(new DatabaseChecker()));
                 }
 
                 return _datatableRepository;

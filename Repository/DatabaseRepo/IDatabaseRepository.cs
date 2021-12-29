@@ -11,6 +11,6 @@ namespace Repository.DatabaseRepo
     {
         public Task<bool> CreateDatabase(Database database);
 
-        public Task DeleteDatabase(string name);
+        public Task<bool> DeleteDatabase(Database database);
     }
 }

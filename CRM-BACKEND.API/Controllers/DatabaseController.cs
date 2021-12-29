@@ -21,7 +21,7 @@ namespace CRM_BACKEND.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateDatabase([FromQuery]Database database)
+        public async Task<IActionResult> CreateDatabase(Database database)
         {
             if (await repository.Database.CreateDatabase(database))
             {
@@ -36,9 +36,9 @@ namespace CRM_BACKEND.API.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteDatabase(string name)
+        public async Task<IActionResult> DeleteDatabase(Database database)
         {
-            await repository.Database.DeleteDatabase(name);
+            await repository.Database.DeleteDatabase(database);
 
             return Ok("Database is deleted succesfully.");
         }
