@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entiti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{2E2ED659-D153-4019-9463-2FF51DBC92E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exceptions", "Exceptions\Exceptions.csproj", "{2513109D-4391-4780-9E36-7DCC07BFDB1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exceptions", "Exceptions\Exceptions.csproj", "{2513109D-4391-4780-9E36-7DCC07BFDB1D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggerService", "LoggerService\LoggerService.csproj", "{94336FB4-8ABA-4A88-A56A-EB50736A0080}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{2513109D-4391-4780-9E36-7DCC07BFDB1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2513109D-4391-4780-9E36-7DCC07BFDB1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2513109D-4391-4780-9E36-7DCC07BFDB1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94336FB4-8ABA-4A88-A56A-EB50736A0080}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94336FB4-8ABA-4A88-A56A-EB50736A0080}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94336FB4-8ABA-4A88-A56A-EB50736A0080}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94336FB4-8ABA-4A88-A56A-EB50736A0080}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

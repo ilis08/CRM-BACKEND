@@ -1,4 +1,5 @@
 ﻿using Entities.Models.DatabaseCreation;
+using LoggerService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository;
@@ -14,10 +15,13 @@ namespace CRM_BACKEND.API.Controllers
     public class DatabaseController : ControllerBase
     {
         IRepositoryManager repository;
+        ILoggerManager logger;
 
-        public DatabaseController(IRepositoryManager _repository)
+        public DatabaseController(IRepositoryManager _repository, ILoggerManager _logger)
         {
             repository = _repository;
+            logger = _logger;
+            logger.LogDebug("NLog injected into DatabaseController");
         }
 
         [HttpPost]
@@ -25,10 +29,12 @@ namespace CRM_BACKEND.API.Controllers
         {
             if (await repository.Database.CreateDatabase(database))
             {
+                logger.LogInfo("Database is created.");
                 return Ok("Database is created succesfully.");
             }
             else
             {
+                logger.LogWarning("Datatabe was not created.");
                 return Ok("Database was not created");
             }
 
