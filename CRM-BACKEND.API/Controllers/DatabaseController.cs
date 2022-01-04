@@ -14,8 +14,8 @@ namespace CRM_BACKEND.API.Controllers
     [ApiController]
     public class DatabaseController : ControllerBase
     {
-        IRepositoryManager repository;
-        ILoggerManager logger;
+        private readonly IRepositoryManager repository;
+        private readonly ILoggerManager logger;
 
         public DatabaseController(IRepositoryManager _repository, ILoggerManager _logger)
         {
@@ -24,10 +24,18 @@ namespace CRM_BACKEND.API.Controllers
             logger.LogDebug("NLog injected into DatabaseController");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetDatabases()
+        {
+            var databases = await repository.Database.GetDatabasesAsync();
+
+            return Ok(databases);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateDatabase(Database database)
         {
-            if (await repository.Database.CreateDatabase(database))
+            if (await repository.Database.CreateDatabaseAsync(database))
             {
                 logger.LogInfo("Database is created.");
                 return Ok("Database is created succesfully.");
@@ -44,7 +52,7 @@ namespace CRM_BACKEND.API.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteDatabase(Database database)
         {
-            await repository.Database.DeleteDatabase(database);
+            await repository.Database.DeleteDatabaseAsync(database);
 
             return Ok("Database is deleted succesfully.");
         }

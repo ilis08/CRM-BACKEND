@@ -8,16 +8,24 @@ using System.Threading.Tasks;
 using Entities.Models.DatabaseCreation;
 using System.Data.SqlClient;
 using System.Data;
+using LoggerService;
+using AutoMapper;
+using Exceptions.NotFound;
+using System.ComponentModel.DataAnnotations;
 
 namespace Repository.DatatableRepo
 {
     public class DatatableRepository : DatabaseConfiguration, IDatatableRepository
     {
-        private DatatableChecker datatableChecker;
+        private readonly DatatableChecker datatableChecker;
+        private readonly ILoggerManager logger;
+        private readonly IMapper mapper;
 
-        public DatatableRepository(DatatableChecker _datatableChecker)
+        public DatatableRepository(DatatableChecker _datatableChecker, ILoggerManager _logger, IMapper _mapper)
         {
             datatableChecker = _datatableChecker;
+            logger = _logger;
+            mapper = _mapper;
         }
 
         public DatatableRepository()
@@ -25,7 +33,7 @@ namespace Repository.DatatableRepo
 
         }
 
-        public async Task<bool> CreateTable(DataTableService service)
+        public async Task<bool> CreateTableAsync(DataTableService service)
         {
             await OpenConnection(service.Database);
 
@@ -61,7 +69,7 @@ namespace Repository.DatatableRepo
             }
         }
 
-        public async Task DeleteTable(DataTableService service)
+        public async Task DeleteTableAsync(DataTableService service)
         {
             await OpenConnection(service.Database);
 
@@ -81,21 +89,71 @@ namespace Repository.DatatableRepo
 
 
 
-        public async Task<DataTable> GetTableSchema(DataTableService service)
+        public async Task<DataTable> GetTableSchemaAsync(DataTableService service)
         {
-            await OpenConnection(service.Database);
+            try
+            {
+                await OpenConnection(service.Database);
 
-            SqlCommand command = new SqlCommand(String.Format("SELECT * FROM {0}","[" + service.Table.Name.Replace("]", "]]") + "]"), sqlConnection);
+                var isTableExisted = await datatableChecker.CheckIfTableExistInDBAsync(service);
 
-            var reader = await command.ExecuteReaderAsync();
+                if (isTableExisted == false)
+                {
+                    throw new DatatableNotFoundException(service);
+                }
 
-            var sql = await reader.GetSchemaTableAsync();
+                SqlCommand command = new SqlCommand(String.Format("SELECT * FROM {0}", "[" + service.Table.Name.Replace("]", "]]") + "]"), sqlConnection);
 
-            await CloseConnection();
-            return sql;
+                var reader = await command.ExecuteReaderAsync();
+
+                DataTable schema = new();
+
+                schema = await reader.GetSchemaTableAsync();
+
+                /*DataTableService dataTable = new DataTableService()
+                {
+                    Table = new Table()
+                    {
+                        Properties = new List<Property>()
+                    }
+                };
+
+                dataTable.Database = service.Database;
+
+                List<Property> properties = new();
+
+                if (schema is not null)
+                {
+                    foreach (DataRow row in schema.Rows)
+                    {
+                        foreach (DataColumn column in schema.Columns)
+                        {
+                            var dColumn = row[column];
+
+                            var property = mapper.Map<Property>(dColumn);
+
+                            properties.Add(property);
+                        }
+                    }
+
+                    dataTable.Table.Properties.AddRange(properties);
+                }*/
+                await reader.CloseAsync();
+
+                return schema; 
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Something went wrong in the {nameof(GetTableSchemaAsync)} servise method {ex}");
+                throw;
+            }
+            finally
+            {
+                await CloseConnection();
+            }
         }
 
-        public async Task UpdateTable(DataTableService service)
+        public async Task UpdateTableAsync(DataTableService service)
         {
             throw new NotImplementedException();
         }

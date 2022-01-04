@@ -9,8 +9,10 @@ namespace Repository.DatabaseRepo
 {
     public interface IDatabaseRepository
     {
-        public Task<bool> CreateDatabase(Database database);
+        public Task<List<Database>> GetDatabasesAsync();
 
-        public Task<bool> DeleteDatabase(Database database);
+        public Task<bool> CreateDatabaseAsync(Database database);
+
+        public Task<bool> DeleteDatabaseAsync(Database database);
     }
 }

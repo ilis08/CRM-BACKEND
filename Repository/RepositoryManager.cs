@@ -1,4 +1,6 @@
-﻿using Repository.DatabaseRepo;
+﻿using AutoMapper;
+using LoggerService;
+using Repository.DatabaseRepo;
 using Repository.DatatableRepo;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,20 @@ namespace Repository
 {
     public class RepositoryManager : IRepositoryManager
     {
+        private readonly ILoggerManager logger;
+        private readonly DatabaseChecker databaseChecker;
+        private readonly DatatableChecker datatableChecker;
+        private readonly IMapper mapper;
+
+
+        public RepositoryManager(ILoggerManager _logger, DatatableChecker _datatableChecker, DatabaseChecker _databaseChecker, IMapper _mapper)
+        {
+            logger = _logger;
+            datatableChecker = _datatableChecker;
+            databaseChecker = _databaseChecker;
+            mapper = _mapper;   
+        }
+
         private IDatabaseRepository _databaseRepository;
         private IDatatableRepository _datatableRepository;
 
@@ -19,7 +35,7 @@ namespace Repository
             {
                 if (_databaseRepository == null)
                 {
-                    _databaseRepository = new DatabaseRepository(new DatabaseChecker());
+                    _databaseRepository = new DatabaseRepository(databaseChecker, logger);
                 }
 
                 return _databaseRepository;
@@ -32,7 +48,7 @@ namespace Repository
             {
                 if (_datatableRepository == null)
                 {
-                    _datatableRepository = new DatatableRepository(new DatatableChecker(new DatabaseChecker()));
+                    _datatableRepository = new DatatableRepository(datatableChecker, logger, mapper);
                 }
 
                 return _datatableRepository;

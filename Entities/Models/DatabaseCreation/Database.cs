@@ -8,6 +8,16 @@ namespace Entities.Models.DatabaseCreation
 {
     public class Database
     {
+        public Database(string name)
+        {
+            Name = name;
+        }
+
+        public Database()
+        {
+
+        }
+
         public string Name { get; set; }
 
         public string Login { get; set; }

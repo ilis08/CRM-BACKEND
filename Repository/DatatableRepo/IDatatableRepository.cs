@@ -11,12 +11,12 @@ namespace Repository.DatatableRepo
 {
     public interface IDatatableRepository
     {
-        public Task<DataTable> GetTableSchema(DataTableService service);
+        public Task<DataTable> GetTableSchemaAsync(DataTableService service);
 
-        public Task<bool> CreateTable(DataTableService service);
+        public Task<bool> CreateTableAsync(DataTableService service);
 
-        public Task UpdateTable(DataTableService service);
+        public Task UpdateTableAsync(DataTableService service);
 
-        public Task DeleteTable(DataTableService service);
+        public Task DeleteTableAsync(DataTableService service);
     }
 }

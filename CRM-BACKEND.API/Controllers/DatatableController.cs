@@ -1,5 +1,6 @@
 ﻿using Entities.Models.DatabaseCreation;
 using Entities.Models.DataTableCreation;
+using LoggerService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository;
@@ -14,17 +15,19 @@ namespace CRM_BACKEND.API.Controllers
     [ApiController]
     public class DatatableController : ControllerBase
     {
-        IRepositoryManager repository;
+        private readonly IRepositoryManager repository;
+        private readonly ILoggerManager logger;
 
-        public DatatableController(IRepositoryManager _repository)
+        public DatatableController(IRepositoryManager _repository, ILoggerManager _logger)
         {
             repository = _repository;
+            logger = _logger;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTable([FromQuery]DataTableService service)
+        public async Task<IActionResult> GetTable([FromQuery] DataTableService service)
         {
-            var schema  = await repository.Datatable.GetTableSchema(service);
+            var schema = await repository.Datatable.GetTableSchemaAsync(service);
 
             return Ok(schema);
         }
@@ -32,7 +35,7 @@ namespace CRM_BACKEND.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTable(DataTableService service)
         {
-            var value = await repository.Datatable.CreateTable(service);
+            var value = await repository.Datatable.CreateTableAsync(service);
 
             if (value)
             {
@@ -42,13 +45,13 @@ namespace CRM_BACKEND.API.Controllers
             {
                 return BadRequest("Table was not created.");
             }
-  
+
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteTable(DataTableService service)
         {
-            await repository.Datatable.DeleteTable(service);
+            await repository.Datatable.DeleteTableAsync(service);
 
             return Ok("УДАЛИЛОСЬ.");
         }

@@ -1,5 +1,7 @@
 ﻿using Entities.Models.DatabaseCreation;
+using LoggerService;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -12,15 +14,17 @@ namespace Repository.DatabaseRepo
     public class DatabaseRepository : DatabaseConfiguration, IDatabaseRepository
     {
         public DatabaseChecker dbChecker;
+        public ILoggerManager logger;
 
         public DatabaseRepository(string databaseName, DatabaseChecker databaseChecker) : base(databaseName)
         {
             dbChecker = databaseChecker;
         }
 
-        public DatabaseRepository(DatabaseChecker databaseChecker)
+        public DatabaseRepository(DatabaseChecker databaseChecker, ILoggerManager _logger)
         {
             dbChecker = databaseChecker;
+            logger = _logger;
         }
 
         public DatabaseRepository()
@@ -28,7 +32,44 @@ namespace Repository.DatabaseRepo
 
         }
 
-        public async Task<bool> CreateDatabase(Database database)
+        public async Task<List<Database>> GetDatabasesAsync()
+        {
+            try
+            {
+                await OpenConnection();
+
+                List<Database> databases = new();
+
+                var sql = new SqlCommand("SELECT name FROM master.dbo.sysdatabases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')", sqlConnection);
+
+                var reader = await sql.ExecuteReaderAsync();
+
+                if (reader.HasRows)
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            databases.Add(new Database(reader[i].ToString()));
+                        }
+                    }
+                }
+
+                return databases;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Something went wrong in the {nameof(GetDatabasesAsync)} servise method {ex}");
+                throw;
+            }finally
+            {
+                await CloseConnection();
+            }
+
+          
+        }
+
+        public async Task<bool> CreateDatabaseAsync(Database database)
         {
             await OpenConnection();
 
@@ -51,7 +92,7 @@ namespace Repository.DatabaseRepo
             }
         }
 
-        public async Task<bool> DeleteDatabase(Database database)
+        public async Task<bool> DeleteDatabaseAsync(Database database)
         {
             await OpenConnection();
 

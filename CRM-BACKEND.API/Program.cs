@@ -1,4 +1,5 @@
 using CRM_BACKEND.API.Extensions;
+using LoggerService;
 using NLog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,19 +10,27 @@ LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nl
 builder.Services.ConfigureLoggerService();
 builder.Services.ConfigureSwagger();
 builder.Services.ConfigureRepositoryManager();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddControllers().AddNewtonsoftJson();
+builder.Services.AddControllers(config =>
+{
+    config.RespectBrowserAcceptHeader = true;
+    //Return 406 Not Acceptable if client tries to negotiate for the media type the server doesn't support.
+    config.ReturnHttpNotAcceptable = true;
+}).AddNewtonsoftJson();
+
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+
+var logger = app.Services.GetRequiredService<ILoggerManager>();
+app.ConfigureExceptionHandler(logger);
+
+if (app.Environment.IsProduction())
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
