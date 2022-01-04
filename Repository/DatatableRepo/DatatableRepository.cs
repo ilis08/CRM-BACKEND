@@ -110,7 +110,7 @@ namespace Repository.DatatableRepo
 
                 schema = await reader.GetSchemaTableAsync();
 
-                /*DataTableService dataTable = new DataTableService()
+                DataTableService dataTable = new DataTableService()
                 {
                     Table = new Table()
                     {
@@ -137,7 +137,7 @@ namespace Repository.DatatableRepo
                     }
 
                     dataTable.Table.Properties.AddRange(properties);
-                }*/
+                }
                 await reader.CloseAsync();
 
                 return schema; 
